@@ -93,7 +93,10 @@ class THBattle(Game):
         random.Random(seed).shuffle(chars)
 
         # ANCHOR(test)
+        from .characters.alice import Alice
+        chars.remove(Alice)
         chars.extend([
+            Alice
         ])
 
         choices = [CharChoice(cls) for cls in chars[-16:]]

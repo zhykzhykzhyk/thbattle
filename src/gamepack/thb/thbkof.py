@@ -101,8 +101,15 @@ class THBattleKOF(Game):
         chars = get_characters('kof')
 
         from characters.akari import Akari
+        from characters.yukari import Yukari
+        from characters.youmu import Youmu
+        from characters.alice import Alice
 
+        chars.remove(Yukari)
+        chars.remove(Alice)
+        chars.remove(Youmu)
         _chars = g.random.sample(chars, 10)
+        _chars.extend([Yukari, Youmu, Alice])
         if Game.SERVER_SIDE:
             choice = [CharChoice(cls) for cls in _chars[-10:]]
 
