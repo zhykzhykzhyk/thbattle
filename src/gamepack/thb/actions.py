@@ -212,7 +212,7 @@ def migrate_cards(cards, to, unwrap=False, trans=None):
         if l[0].is_card(VirtualCard):
             assert len(l) == 1
             trans.move(l, cl, to, unwrap)
-            if to: migrate_cards(
+            if to is not None: migrate_cards(
                 l[0].associated_cards,
                 to if unwrap else to.owner.special,
                 unwrap if type(unwrap) is bool else unwrap - 1,
