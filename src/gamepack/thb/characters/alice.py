@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from game.autoenv import EventHandler, user_input, Game
 from baseclasses import Character, register_character
-from ..actions import DrawCards, UserAction, ActionStageLaunchCard, user_choose_players, DropCards
-from ..cards import Skill, TreatAsSkill, AttackCardHandler, DollControlCard, t_None
+from ..actions import DrawCards, UserAction, DropCardStage, user_choose_players, DropCards
+from ..cards import Skill, t_None
 from ..inputlets import ChoosePeerCardInputlet, ChooseOptionInputlet
 
 
 class LittleLegion(Skill):
-    pass
+    associated_action = None
+    target = t_None
 
 
 class LittleLegionDrawCards(DrawCards):
@@ -82,40 +83,23 @@ class LittleLegionHandler(EventHandler):
         return ([tgt], bool(tgt.equips or tgt.cards or tgt.showncards))
 
 
-class MaidensBunraku(TreatAsSkill):
-    treat_as = DollControlCard
-
-    def check(self):
-        cl = self.associated_cards
-        if not cl and len(cl) == 1: return False
-        c = cl[0]
-        if c.resides_in.type not in ('cards', 'showncards', 'equips'):
-            return False
-
-        return 'instant_spellcard' in c.category
+class MaidensBunraku(Skill):
+    associated_action = None
+    target = t_None
 
 
 class MaidensBunrakuHandler(EventHandler):
-    def handle(self, evt_type, arg):
-        if evt_type == 'action_after' and isinstance(arg, ActionStageLaunchCard):
-            c = arg.card
-            if c.is_card(MaidensBunraku):
-                src = arg.source
-                src.tags['alice_bunraku_tag'] = src.tags['turn_count']
+    def handle(self, evt_type, act):
+        if evt_type == 'action_apply' and isinstance(act, DropCardStage):
+            tgt = act.target
+            if not tgt.has_skill(MaidensBunraku): return act
+            amount = (len(tgt.equips) + 1) / 2
+            act.dropn -= amount if amount > 1 else 1
 
-        elif evt_type == 'action_can_fire':
-            act, valid = arg
-            if isinstance(act, ActionStageLaunchCard):
-                c = act.card
-                if c.is_card(MaidensBunraku):
-                    t = act.source.tags
-                    if t['alice_bunraku_tag'] >= t['turn_count']:
-                        return act, False
-
-        return arg
+        return act
 
 @register_character
 class Alice(Character):
     skills = [LittleLegion, MaidensBunraku]
     eventhandlers_required = [LittleLegionHandler, MaidensBunrakuHandler]
-    maxlife = 4
+    maxlife = 3
