@@ -1,0 +1,283 @@
+fileFormatVersion: 2
+guid: 90ab7a0fdd3b15d439c3641827dbd171
+TextureImporter:
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 1024
+  textureSettings:
+    filterMode: -1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 6
+  spritePivot: {x: .5, y: .5}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings:
+  - buildTarget: iPhone
+    maxTextureSize: 1024
+    textureFormat: -2
+    compressionQuality: 50
+  spriteSheet:
+    sprites:
+    - name: cardnum_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_1
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_2
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_3
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_4
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_5
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_6
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_7
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_8
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_9
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_10
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_11
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_12
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 15
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_13
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_14
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_15
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_16
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_17
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_18
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_19
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_20
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_21
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_22
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_23
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_24
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+    - name: cardnum_25
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 0
+        width: 12
+        height: 15
+      alignment: 6
+      pivot: {x: 0, y: 0}
+  spritePackingTag: 
+  userData: 

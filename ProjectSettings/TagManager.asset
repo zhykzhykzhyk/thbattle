@@ -41,3 +41,7 @@ TagManager:
     userID: 0
     uniqueID: 0
     locked: 0
+  - name: Suits and Numbers
+    userID: 1
+    uniqueID: 3651824307
+    locked: 0
