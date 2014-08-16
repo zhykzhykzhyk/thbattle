@@ -26,6 +26,8 @@ class DestructionImpulseAction(GenericAction):
 
 
 class DestructionImpulseHandler(EventHandler):
+    execute_before = ('CiguateraHandler', )
+
     def handle(self, evt_type, act):
         if evt_type == 'action_after' and isinstance(act, Damage):
             src = act.source
@@ -81,6 +83,9 @@ class FourOfAKindAction(GenericAction):
 
 
 class FourOfAKindHandler(EventHandler):
+    execute_before = ('ProtectionHandler', )
+    execute_after = ('RepentanceStickHandler', )
+
     def handle(self, evt_type, act):
         if evt_type == 'action_before' and isinstance(act, Damage):
             if act.cancelled: return act

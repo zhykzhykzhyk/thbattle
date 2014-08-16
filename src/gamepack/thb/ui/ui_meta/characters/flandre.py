@@ -31,14 +31,14 @@ class DestructionImpulseHandler:
         if cards:
             return (False, u'请不要选择牌！')
 
-        return (True, u'')
+        return (True, u'玩坏你哦')
 
     # choose_players
     def target(pl):
         if not pl:
             return (False, u'请选择1名距离1以内的玩家，对其造成一点伤害')
 
-        return (True, u'')
+        return (True, u'玩坏你哦')
 
 
 class FourOfAKind:
