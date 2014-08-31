@@ -1,7 +1,8 @@
-from gevent import socket
-from .transaction import TransactionManager
+from gevent import socket, coros
 import simplejson as json
 import logging
+
+from .transaction import TransactionManager
 
 log = logging.getLogger("Endpoint")
 
@@ -18,6 +19,7 @@ class Endpoint(object):
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         self.sock       = sock
         self.sockfile   = sock.makefile()
+        self.writelock  = coros.RLock()
         self.address    = address
         self.link_state = 'connected'  # or disconnected
 
@@ -42,14 +44,11 @@ class Endpoint(object):
             with TransactionManager.begin() as trans:
                 @trans.add_pending
                 def pending():
-                    if self.link_state != 'connected':
-                        return
-
                     try:
-                        self.sock.sendall(s)
+                        with self.writelock:
+                            self.sock.sendall(s)
                     except IOError:
                         self.close()
-
         else:
             log.debug('Write after disconnected: %s' % s[:-1])
             return False
