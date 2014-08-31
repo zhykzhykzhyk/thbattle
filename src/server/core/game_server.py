@@ -211,7 +211,6 @@ class Game(Greenlet, game.Game):
         from server.core import lobby
         self.synctag = 0
         self.game = getcurrent()
-        lobby.start_game(self.manager)
         try:
             self.game_start(self.manager.game_params)
         except GameEnded:

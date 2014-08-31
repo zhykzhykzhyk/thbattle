@@ -21,6 +21,7 @@ import simplejson as json
 from account import Account
 from network.endpoint import EndpointDied
 from network.server import Client as ClientEndpoint
+from network.transaction import TransactionManager, transactional
 from options import options
 from settings import VERSION
 from utils import BatchList, log_failure, instantiate
@@ -139,6 +140,7 @@ class Client(ClientEndpoint):
             self.write(['auth_result', 'invalid_credential'])
 
     @for_state('hang')
+    @transactional
     def command_create_game(self, _type, name):
         manager = lobby.create_game(self, _type, name)
         manager and lobby.join_game(self, manager.gameid)
@@ -262,16 +264,19 @@ class Lobby(object):
 
     @throttle(1.5)
     def refresh_status(self):
-        ul = [u for u in self.users.values() if u.state == 'hang']
-        Pool(5).map_async(self.send_lobbyinfo, ul)
-        interconnect.publish('current_users', self.users.values())
-        interconnect.publish('current_games', self.games.values())
+        @gevent.spawn
+        def worker():
+            ul = [u for u in self.users.values() if u.state == 'hang']
+            Pool(5).map_async(self.send_lobbyinfo, ul)
+            interconnect.publish('current_users', self.users.values())
+            interconnect.publish('current_games', self.games.values())
 
     def send_lobbyinfo(self, user):
         user.write(['current_games', self.games.values()])
         user.write(['current_users', self.users.values()])
         user.write(['your_account', user.account])
 
+    @transactional
     def user_join(self, user):
         uid = user.account.userid
 
@@ -304,6 +309,7 @@ class Lobby(object):
 
         return True
 
+    @transactional
     def user_leave(self, user):
         uid = user.account.userid
         self.users.pop(uid, 0)
@@ -325,6 +331,7 @@ class Lobby(object):
 
         return manager
 
+    @transactional
     def join_game(self, user, gameid, slot=None):
         if user.state in ('hang', 'observing') and gameid in self.games:
             manager = self.games[gameid]
@@ -341,6 +348,7 @@ class Lobby(object):
         manager.join_game(user, slot, observing=user.state == 'observing')
         self.refresh_status()
 
+    @transactional
     def clear_observers(self, user):
         obs = user.observers[:]
         user.observers[:] = []
@@ -352,6 +360,7 @@ class Lobby(object):
         for ob in obs:
             ob.write(['game_left', None])
 
+    @transactional
     def try_remove_empty_game(self, manager):
         if manager.gameid not in self.games:
             return
@@ -373,11 +382,13 @@ class Lobby(object):
         manager.kill_game()
         self.games.pop(manager.gameid, None)
 
+    @transactional
     def start_game(self, manager):
         log.info("game started")
         manager.start_game()
         self.refresh_status()
 
+    @transactional
     def quick_start_game(self, user):
         if user.state != 'hang':
             user.write(['lobby_error', 'cant_join_game'])
@@ -390,6 +401,7 @@ class Lobby(object):
         else:
             user.write(['lobby_error', 'cant_join_game'])
 
+    @transactional
     def end_game(self, manager):
         log.info("end game")
         manager.archive()
@@ -419,6 +431,7 @@ class Lobby(object):
         new_mgr.update_game_param(manager.game_params)
         self.refresh_status()
 
+    @transactional
     def exit_game(self, user, is_drop=False):
         manager = GameManager.get_by_user(user)
         if user.state == 'observing':
@@ -437,6 +450,7 @@ class Lobby(object):
         else:
             user.write(['lobby_error', 'not_in_a_game'])
 
+    @transactional
     def send_gameinfo(self, user, gid):
         manager = self.games.get(gid)
         if not manager:
@@ -444,6 +458,7 @@ class Lobby(object):
 
         manager.send_gameinfo(user)
 
+    @transactional
     def change_location(self, user, loc):
         manager = GameManager.get_by_user(user)
         if user.state == 'inroomwait':
@@ -452,6 +467,7 @@ class Lobby(object):
         elif user.state == 'observing':
             self.join_game(user, manager.gameid, loc)
 
+    @transactional
     def set_game_param(self, user, key, value):
         if user.state != 'inroomwait':
             return
@@ -460,6 +476,7 @@ class Lobby(object):
         manager.set_game_param(user, key, value)
         self.refresh_status()
 
+    @transactional
     def kick_user(self, user, uid):
         other = self.users.get(uid)
         if not other:
@@ -469,6 +486,7 @@ class Lobby(object):
         if manager.kick_user(user, other):
             self.exit_game(other)
 
+    @transactional
     def kick_observer(self, user, uid):
         other = self.users.get(uid)
         if not other:
@@ -478,16 +496,19 @@ class Lobby(object):
         if manager.kick_observer(user, other):
             self.exit_game(other)
 
+    @transactional
     def get_ready(self, user):
         manager = GameManager.get_by_user(user)
         manager.get_ready(user)
         self.refresh_status()
 
+    @transactional
     def cancel_ready(self, user):
         manager = GameManager.get_by_user(user)
         manager.cancel_ready(user)
         self.refresh_status()
 
+    @transactional
     def observe_user(self, user, other_userid):
         other = self.users.get(other_userid, None)
 
@@ -523,23 +544,25 @@ class Lobby(object):
 
                     break
 
-            if not (rst and
-                    user.state == 'hang' and
-                    other.state in ('ingame', 'inroomwait', 'ready')):
-                return
+            with TransactionManager.begin():
+                if not (rst and
+                        user.state == 'hang' and
+                        other.state in ('ingame', 'inroomwait', 'ready')):
+                    return
 
-            if grant:
-                if other.state not in ('ingame', 'inroomwait', 'ready'):
-                    user.write(['lobby_error', 'user_not_ingame'])
+                if grant:
+                    if other.state not in ('ingame', 'inroomwait', 'ready'):
+                        user.write(['lobby_error', 'user_not_ingame'])
+                    else:
+                        manager = GameManager.get_by_user(other)
+                        manager.observe_user(user, other)
+                        self.refresh_status()
                 else:
-                    manager = GameManager.get_by_user(other)
-                    manager.observe_user(user, other)
-                    self.refresh_status()
-            else:
-                user.write(['observe_refused', other.account.username])
+                    user.write(['observe_refused', other.account.username])
 
         worker.gr_name = 'OB:[%r] -> [%r]' % (user, other)
 
+    @transactional
     def invite_user(self, user, other_userid):
         if user.account.userid < 0:
             gevent.spawn(user.write, ['system_msg', [None, u'毛玉不能使用邀请功能']])
@@ -582,19 +605,20 @@ class Lobby(object):
 
                     break
 
-            if not (grant and gid in self.games and not manager.game_started and other.state != 'ingame'):
-                # granted, game not cancelled or started
-                return
+            with TransactionManager.begin():
+                if not (grant and gid in self.games and not manager.game_started and other.state != 'ingame'):
+                    # granted, game not cancelled or started
+                    return
 
-            if manager.next_free_slot() is None:
-                # no free space
-                return
+                if manager.next_free_slot() is None:
+                    # no free space
+                    return
 
-            if other.state in ('inroomwait', 'ready') and other.current_game is manager:
-                # same game
-                return
+                if other.state in ('inroomwait', 'ready') and other.current_game is manager:
+                    # same game
+                    return
 
-            self.join_game(other, gid)
+                self.join_game(other, gid)
 
         worker.gr_name = 'Invite:[%r] -> [%r]' % (user, other)
 
@@ -804,6 +828,7 @@ class GameManager(object):
                 # race condition here.
                 # wrap in 'if g.started' to prevent double starting.
                 log.info("game starting")
+                lobby.start_game(self)
                 g.start()
 
     def cancel_ready(self, user):
@@ -955,12 +980,11 @@ class GameManager(object):
         if slot is None:
             return
 
-        self.users[slot] = user
-
         if observing:
             origin = self.get_by_user(user)
             origin.observe_leave(user, no_move=origin is self)
 
+        self.users[slot] = user
         user.current_game = self
         user.state = 'inroomwait'
         user.write(['game_joined', self])
