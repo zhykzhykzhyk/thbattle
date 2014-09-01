@@ -1,4 +1,6 @@
 from gevent import socket, coros
+from collections import defaultdict
+from cStringIO import StringIO
 import simplejson as json
 import logging
 
@@ -20,6 +22,7 @@ class Endpoint(object):
         self.sock       = sock
         self.sockfile   = sock.makefile()
         self.writelock  = coros.RLock()
+        self.buffers     = defaultdict(StringIO)
         self.address    = address
         self.link_state = 'connected'  # or disconnected
 
@@ -42,13 +45,16 @@ class Endpoint(object):
                 log.debug("SEND>> %s" % s[:-1])
 
             with TransactionManager.support() as trans:
+                self.buffers[trans].write(s)
+
                 @trans.on_commit
                 def commit():
-                    try:
+                    if trans in self.buffers:
+                        data = self.buffers[trans].getvalue()
+                        del self.buffers[trans]
                         with self.writelock:
-                            self.sock.sendall(s)
-                    except IOError:
-                        self.close()
+                            self.sock.sendall(data)
+
         else:
             log.debug('Write after disconnected: %s' % s[:-1])
             return False
@@ -64,6 +70,9 @@ class Endpoint(object):
             self.link_state = 'disconnected'
             self.sockfile.close()
             self.sock.close()
+            for b in self.buffers.items():
+                b.close()
+            self.buffers.clear()
 
     def read(self):
         if self.link_state != 'connected':
