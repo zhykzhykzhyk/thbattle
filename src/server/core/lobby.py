@@ -544,7 +544,7 @@ class Lobby(object):
 
                     break
 
-            with TransactionManager.begin():
+            with TransactionManager.require():
                 if not (rst and
                         user.state == 'hang' and
                         other.state in ('ingame', 'inroomwait', 'ready')):
@@ -605,7 +605,7 @@ class Lobby(object):
 
                     break
 
-            with TransactionManager.begin():
+            with TransactionManager.require():
                 if not (grant and gid in self.games and not manager.game_started and other.state != 'ingame'):
                     # granted, game not cancelled or started
                     return

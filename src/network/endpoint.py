@@ -41,9 +41,9 @@ class Endpoint(object):
             if Endpoint.ENDPOINT_DEBUG:
                 log.debug("SEND>> %s" % s[:-1])
 
-            with TransactionManager.begin() as trans:
-                @trans.add_pending
-                def pending():
+            with TransactionManager.support() as trans:
+                @trans.on_commit
+                def commit():
                     try:
                         with self.writelock:
                             self.sock.sendall(s)
