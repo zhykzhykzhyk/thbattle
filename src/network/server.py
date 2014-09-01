@@ -56,6 +56,10 @@ class Client(Endpoint, GamedataMixin, Greenlet):
                 self.gbreak()
                 break
 
+            except Exception, e:
+                log.exception(e)
+                Endpoint.close(self)
+
         # client died, do clean ups
         self.handle_drop()
 
