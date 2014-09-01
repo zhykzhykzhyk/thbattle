@@ -401,7 +401,6 @@ class Lobby(object):
         else:
             user.write(['lobby_error', 'cant_join_game'])
 
-    @transactional
     def end_game(self, manager):
         log.info("end game")
         manager.archive()
@@ -414,22 +413,23 @@ class Lobby(object):
             for u, t, v in bonus:
                 u.account.add_credit(t, v)
 
-        for u in manager.users:
-            u.gclear()  # clear game data
-            self.dropped_users.pop(u.account.userid, 0)
+        with TransactionManager.require():
+            for u in manager.users:
+                u.gclear()  # clear game data
+                self.dropped_users.pop(u.account.userid, 0)
 
-        manager.end_game()
-        self.games.pop(manager.gameid, 0)
+            manager.end_game()
+            self.games.pop(manager.gameid, 0)
 
-        if all_dropped:
-            return
+            if all_dropped:
+                return
 
-        new_mgr = self.create_game(None, manager.gamecls.__name__, manager.game_name)
-        for u in manager.users:
-            self.join_game(u, new_mgr.gameid)
+            new_mgr = self.create_game(None, manager.gamecls.__name__, manager.game_name)
+            for u in manager.users:
+                self.join_game(u, new_mgr.gameid)
 
-        new_mgr.update_game_param(manager.game_params)
-        self.refresh_status()
+            new_mgr.update_game_param(manager.game_params)
+            self.refresh_status()
 
     @transactional
     def exit_game(self, user, is_drop=False):
