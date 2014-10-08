@@ -13,7 +13,7 @@ import gevent
 # -- own --
 from endpoint import EndpointDied
 from game import GameEnded, InputTransaction, TimeLimitExceeded
-from utils import log_failure
+from utils import log_failure, iwait
 import game
 
 # -- code --
@@ -77,7 +77,7 @@ def user_input(players, inputlet, timeout=25, type='single', trans=None):
         log.error('Waiting %s, %s', [i.gr_name for i in _input_group], input_group)
         _copy = set(_input_group)
         gevent.sleep(0.01)
-        for w in gevent.iwait(_input_group, timeout=timeout + 5):
+        for w in iwait(_input_group, timeout=timeout + 5):
             log.error('Wait got %s', w.gr_name)
             _copy.discard(w)
             try:

@@ -718,3 +718,23 @@ def throttle(seconds):
         return wrapper
 
     return decorate
+
+
+def iwait(objects, timeout=None):
+    count = len(objects)
+    queue = Queue(count + 1)
+
+    def complete():
+        queue.put(StopIteration)
+
+    def put(o, r=[count]):
+        queue.put(o)
+        r[0] -= 1
+        if r[0] == 0:
+            complete()
+
+    gevent.spawn_later(timeout, complete)
+    for o in objects:
+        o.link(put)
+
+    return queue
