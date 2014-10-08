@@ -23,6 +23,7 @@ ACCOUNT_MODULE = 'freeplay' if options.freeplay else 'forum_integration'
 ACCOUNT_FORUMURL = 'http://www.thbattle.net'
 
 TESTING_CHARACTERS = (
+    'Mamizou',
 )
 
 

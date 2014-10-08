@@ -74,7 +74,12 @@ def user_input(players, inputlet, timeout=25, type='single', trans=None):
         for p in players:
             g.emit_event('user_input_start', (trans, ilets[p]))
 
+        log.error('Waiting %s, %s', [i.gr_name for i in _input_group], input_group)
+        _copy = set(_input_group)
+        gevent.sleep(0.01)
         for w in gevent.iwait(_input_group, timeout=timeout + 5):
+            log.error('Wait got %s', w.gr_name)
+            _copy.discard(w)
             try:
                 rst = w.get()
                 p, data = w.player, rst
@@ -106,10 +111,13 @@ def user_input(players, inputlet, timeout=25, type='single', trans=None):
                 inputany_player = p
                 break
 
+            log.error('Wait: continue... %s %s', input_group, _copy)
+
     except TimeLimitExceeded:
         pass
 
     finally:
+        log.error('Done! %s', input_group)
         input_group.kill()
 
     # timed-out players
