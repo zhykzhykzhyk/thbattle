@@ -113,6 +113,9 @@ class VengeOfTsukumogamiHandler(EventHandler):
             for c in cards:
                 self.card = c
 
+                if tgt.dead:
+                    break
+
                 if not user_input([p], ChooseOptionInputlet(self, (False, True))):
                     break
 
