@@ -104,6 +104,11 @@ def ask_for_action(initiator, actors, categories, candidates, trans=None):
                 players, valid = initiator.choose_player_target(players)
                 check(valid)
 
+            action_valid = getattr(initiator, 'action_valid', None)
+
+            if action_valid:
+                check(action_valid(actor, cards, players))
+
             return cards, players, params
 
         except CheckFailed:
@@ -488,6 +493,16 @@ class DropUsedCard(DropCards):
     pass
 
 
+class UseCard(GenericAction):
+    def __init__(self, target, card):
+        self.source = self.target = target
+        self.card = card
+
+    def apply_action(self):
+        g = Game.getgame()
+        return g.process_action(DropUsedCard(self.target, [self.card]))
+
+
 class AskForCard(GenericAction):
 
     def __init__(self, source, target, card_cls, categories=('cards', 'showncards')):
@@ -794,6 +809,10 @@ class ActionStage(GenericAction):
         return (
             c.is_card(Skill) or c.resides_in in (tgt.cards, tgt.showncards)
         ) and (c.associated_action)
+
+    def action_valid(self, p, cl, tl):
+        assert len(cl) == 1
+        return ActionStageLaunchCard(p, tl, cl[0]).can_fire()
 
     def choose_player_target(self, tl):
         return tl, True

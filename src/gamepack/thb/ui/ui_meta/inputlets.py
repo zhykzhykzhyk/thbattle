@@ -198,6 +198,11 @@ class ActionInputlet:
         cards, prompt_card = pasv_handle_card_selection(g, ilet, cards)
         plsel, disables, players, prompt_target = pasv_handle_player_selection(g, ilet, players)
 
+        action_valid = getattr(ilet.initiator, 'action_valid', None)
+
+        if action_valid and not action_valid(g.me, cards, players):
+            raise ActionDisplayResult(False, u'您不能这样出牌', plsel, disables, players)
+
         raise ActionDisplayResult(True, prompt_target or prompt_card, plsel, disables, players)
 
     def passive_action_recommend(ilet):
