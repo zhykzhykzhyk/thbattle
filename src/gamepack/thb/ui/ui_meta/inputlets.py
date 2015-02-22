@@ -194,7 +194,6 @@ class ActionInputlet:
         else:
             cards = rawcards
 
-        cards, players = thbactions.handle_action_transform(g, g.me, ilet, cards, usage, players)
         cards, prompt_card = pasv_handle_card_selection(g, ilet, cards)
         plsel, disables, players, prompt_target = pasv_handle_player_selection(g, ilet, players)
 
@@ -233,7 +232,6 @@ class ActionInputlet:
         else:
             cards = rawcards
 
-        cards, players = thbactions.handle_action_transform(g, g.me, ilet, cards, usage, players)
         card = actv_handle_card_selection(g, cards)
         players, disables, prompt = actv_handle_target_selection(g, card, players)
 
