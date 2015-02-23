@@ -97,6 +97,20 @@ class InterruptActionFlow(GameException):
     pass
 
 
+class EventResult(BaseException):
+    def __init__(self, result):
+        self.result = result
+
+
+class BooleanResult(GameObject):
+    def __init__(self, result, reason):
+        self.result = result
+        self.reason = reason
+
+    def __nonzero__(self):
+        return self.result
+
+
 class EventHandler(GameObject):
     execute_before = ()
     execute_after = ()
@@ -234,9 +248,16 @@ class Action(GameObject):
         '''
         Return true if the action can be fired.
         '''
-        _self, rst = Game.getgame().emit_event('action_can_fire', (self, self.is_valid()))
+        rst = self.is_valid()
+        if not rst:
+            return rst
+
+        _self, rst = Game.getgame().emit_event('action_can_fire', (self, rst))
         assert _self is self, "You can't replace action in 'action_can_fire' event!"
         return rst
+
+    def cannot_fire(self, reason=None):
+        raise EventResult((self, BooleanResult(False, reason)))
 
     def apply_action(self):
         raise GameError('Override apply_action to implement Action logics!')
@@ -364,10 +385,14 @@ class Game(GameObject):
         if self.adhoc_ehs:
             ehs = self.adhoc_ehs + ehs
 
-        for eh in ehs:
-            data = self.handle_single_event(eh, evt_type, data)
-            if action_event and data.cancelled:
-                break
+        try:
+            for eh in ehs:
+                data = self.handle_single_event(eh, evt_type, data)
+                if action_event and data.cancelled:
+                    break
+
+        except EventResult, er:
+            return er.result
 
         return data
 

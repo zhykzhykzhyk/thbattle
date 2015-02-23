@@ -88,7 +88,7 @@ class AttackCardHandler(EventHandler):
                     return act
 
                 if src.tags['attack_num'] <= 0:
-                    return (lc, False)
+                    return lc.cannot_fire(self)
 
         return act
 

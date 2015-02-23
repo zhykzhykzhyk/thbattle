@@ -86,7 +86,7 @@ class CriticalStrikeHandler(EventHandler):
             if not c.is_card(AttackCard): return arg
             if src.has_skill(ElementalReactorSkill): return arg
             if set(act.target_list) & set(tags['flan_targets']):
-                return (act, False)
+                return act.cannot_fire(self)
 
             return arg
 

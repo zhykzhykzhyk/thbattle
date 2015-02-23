@@ -3,7 +3,7 @@
 # -- stdlib --
 # -- third party --
 # -- own --
-from gamepack.thb import characters
+from gamepack.thb import characters, cards
 from gamepack.thb.ui.ui_meta.common import gen_metafunc, passive_is_action_valid, passive_clickable
 
 # -- code --
@@ -63,6 +63,14 @@ class MahjongDrugHandler:
 class LunaticHandler:
     choose_option_prompt = u'你要发动【狂气】吗？'
     choose_option_buttons = ((u'发动', True), (u'不发动', False))
+
+
+class DiscarderHandler:
+    def disabled_reason(self):
+        if not self.card.is_card(cards.AttackCard):
+            return u'【丧心】你不能使用弹幕以外的牌。'
+
+        return u'【丧心】你只能对离你最近的角色使用弹幕。'
 
 
 class LunaticAction:

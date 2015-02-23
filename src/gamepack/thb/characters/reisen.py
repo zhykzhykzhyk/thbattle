@@ -4,7 +4,7 @@
 # -- third party --
 # -- own --
 from game.autoenv import EventHandler, Game, user_input
-from gamepack.thb.actions import ActionStageLaunchCard, Damage, LaunchCard, PlayerTurn, UserAction
+from gamepack.thb.actions import Damage, LaunchCard, PlayerTurn, UserAction
 from gamepack.thb.cards import AttackCard, DuelCard, Heal, HealCard, PhysicalCard, Skill, t_None
 from gamepack.thb.characters.baseclasses import Character, register_character
 from gamepack.thb.inputlets import ChooseOptionInputlet
@@ -77,9 +77,9 @@ class DiscarderHandler(EventHandler):
             g = Game.getgame()
             if src is not g.current_turn: return arg
 
-            c = lc.card
+            self.card = c = lc.card
             if not c.is_card(PhysicalCard): return arg
-            if not c.is_card(AttackCard): return lc, False
+            if not c.is_card(AttackCard): return lc.cannot_fire(self)
 
             dist = LaunchCard.calc_distance(src, Discarder(src))
             dist.pop(src, '')
@@ -87,7 +87,7 @@ class DiscarderHandler(EventHandler):
             avail = {p for p in dist if dist[p] <= nearest}
 
             if not set(lc.target_list) <= avail:
-                return lc, False
+                return lc.cannot_fire(self)
 
         elif evt_type == 'action_after' and isinstance(arg, PlayerTurn):
             tgt = arg.target

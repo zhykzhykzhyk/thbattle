@@ -993,3 +993,7 @@ class GrimoireSkill:
 
     def sound_effect(act):
         return 'thb-cv-card_grimoire'
+
+
+class GrimoireHandler:
+    disabled_reason = u'你已经发动过魔导书了。'

@@ -234,3 +234,7 @@ class Heal:
             return u'|G【%s】|r回复了%d点体力。' % (
                 act.target.ui_meta.char_name, act.amount
             )
+
+
+class AttackCardHandler:
+    disabled_reason = u'你已经用过弹幕了。'

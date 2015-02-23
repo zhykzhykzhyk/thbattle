@@ -35,6 +35,19 @@ class ActionDisplayResult(Exception):
         self.pl_selected = pl_selected
 
 
+def reason_of(rst):
+    self = getattr(rst, 'reason', None)
+
+    if not self:
+        return u'您不能这样出牌'
+
+    reason = self.ui_meta.disabled_reason
+    if callable(reason):
+        reason = reason(self)
+
+    return reason
+
+
 def walk_wrapped(cl, check_is_complete):
     g = Game.getgame()
 
@@ -198,9 +211,9 @@ class ActionInputlet:
         plsel, disables, players, prompt_target = pasv_handle_player_selection(g, ilet, players)
 
         action_valid = getattr(ilet.initiator, 'action_valid', None)
-
-        if action_valid and not action_valid(g.me, cards, players):
-            raise ActionDisplayResult(False, u'您不能这样出牌', plsel, disables, players)
+        rst = not action_valid or action_valid(g.me, cards, players)
+        if not rst:
+            raise ActionDisplayResult(False, reason_of(rst), plsel, disables, players)
 
         raise ActionDisplayResult(True, prompt_target or prompt_card, plsel, disables, players)
 
@@ -237,7 +250,8 @@ class ActionInputlet:
 
         act = thbactions.ActionStageLaunchCard(g.me, players, card)
 
-        if not act.can_fire():  # ultimate fallback
-            raise ActionDisplayResult(False, u'您不能这样出牌', True, disables, players)
+        rst = act.can_fire()
+        if not rst:
+            raise ActionDisplayResult(False, reason_of(rst), True, disables, players)
 
         raise ActionDisplayResult(True, prompt, True, disables, players)

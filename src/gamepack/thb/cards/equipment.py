@@ -1024,13 +1024,13 @@ class GrimoireHandler(EventHandler):
                 t = src.tags
 
                 if t['turn_count'] <= t['grimoire_tag']:
-                    return (act, False)
+                    return act.cannot_fire(self)
 
                 if basic.AttackCardHandler.is_freeattack(act.source):
                     return arg
 
                 if t['attack_num'] <= 0:
-                    return (act, False)
+                    return act.cannot_fire(basic.AttackHandler)
 
         elif evt_type == 'action_after' and isinstance(arg, LaunchCard):
             c = arg.card

@@ -177,7 +177,7 @@ class MelancholyHandler(EventHandler):
             zone = src.cards, src.showncards
             for c in cards:
                 if c.resides_in in zone:
-                    return act, False
+                    return act.cannot_fire(self)
 
         return arg
 

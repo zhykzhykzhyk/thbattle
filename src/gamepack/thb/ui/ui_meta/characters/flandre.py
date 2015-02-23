@@ -45,6 +45,8 @@ class CriticalStrikeAction:
     def sound_effect(act):
         return 'thb-cv-flandre_cs'
 
+    disabled_reason = u'你已经对该角色用过弹幕了。'
+
 
 class Exterminate:
     # Skill

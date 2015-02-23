@@ -62,8 +62,9 @@ class InciteAction(UserAction):
             return False
 
         tgt, victim = self.target_list
-        if not Pindian(src, tgt).can_fire(): return False
-        return LaunchCard(tgt, [victim], InciteAttack(tgt)).can_fire()
+        return (
+            Pindian(src, tgt).can_fire() and
+            LaunchCard(tgt, [victim], InciteAttack(tgt)).can_fire())
 
 
 class Incite(Skill):

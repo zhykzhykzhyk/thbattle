@@ -686,9 +686,10 @@ class LaunchCard(GenericAction):
         act = cls(source=src, target=target)
         act.associated_card = card
         act.target_list = tl
+        can_fire = act.can_fire
         if not act.can_fire():
             log.debug('LaunchCard card_action.can_fire() FALSE')
-            return False
+            return can_fire
 
         return True
 

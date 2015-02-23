@@ -85,6 +85,7 @@ class Morphing(TreatAs, Skill):
 
 class MorphingHandler(EventHandler):
     interested = ('action_after', 'action_can_fire')
+
     def handle(self, evt_type, arg):
         if evt_type == 'action_after' and isinstance(arg, ActionStageLaunchCard):
             c = arg.card
@@ -99,7 +100,7 @@ class MorphingHandler(EventHandler):
                 if c.is_card(Morphing):
                     t = act.source.tags
                     if t['mamizou_morphing_tag'] >= t['turn_count']:
-                        return act, False
+                        return act.cannot_fire()
 
         return arg
 
