@@ -5,7 +5,7 @@
 # -- own --
 from game.autoenv import EventHandler, Game, user_input
 from gamepack.thb.actions import DropCards, Fatetell, FatetellAction, FatetellMalleateHandler
-from gamepack.thb.actions import LaunchCard, PostCardMigrationHandler, UseCard, UserAction, user_choose_cards
+from gamepack.thb.actions import LaunchCard, PostCardMigrationHandler, UseCard, user_choose_cards
 from gamepack.thb.cards import AttackCard, Skill, TreatAs, VirtualCard, t_None
 from gamepack.thb.characters.baseclasses import Character, register_character
 from gamepack.thb.inputlets import ChooseOptionInputlet
@@ -49,6 +49,7 @@ class MiracleMalletHandler(EventHandler):
         if not p.has_skill(MiracleMallet): return act
 
         self.number = act.card.number
+        self.act = act
         cards = user_choose_cards(self, p, ('cards', 'showncards', 'equips'))
 
         if cards:
