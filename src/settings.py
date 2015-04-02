@@ -8,7 +8,7 @@ __metaclass__ = lambda _1, _2, _dict: _dict.pop('__module__', '..') and _dict
 
 
 # -- begin settings --
-VERSION = 'THBATTLE V1.0b incr 249'
+VERSION = 'THBATTLE V1.0b incr 249 foobar2'
 
 CWD = os.getcwd()
 BASEDIR = os.path.dirname(os.path.realpath(__file__))
@@ -26,6 +26,8 @@ ACCOUNT_MODULE = 'freeplay' if options.freeplay else 'forum_integration'
 ACCOUNT_FORUMURL = 'http://www.thbattle.net'
 
 TESTING_CHARACTERS = (
+    'Suika',
+    'Nitori',
 )
 
 
