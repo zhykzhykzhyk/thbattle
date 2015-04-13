@@ -25,6 +25,7 @@ except ImportError:
     pass
 
 import os
+import sys
 import platform
 
 if os.name == 'nt' or platform.system() == 'Windows':
@@ -98,6 +99,22 @@ if os.name == 'nt' or platform.system() == 'Windows':
         data.szInfoTitle = unicode(title)[:63]
         data.szInfo = unicode(msg)[:255]
         windll.shell32.Shell_NotifyIconW(NIM_MODIFY, byref(data))
+
+elif sys.platform == 'darwin':
+    from pyglet.libs.darwin.cocoapy import ObjCClass, get_NSString
+
+    NSUserNotificationCenter = ObjCClass("NSUserNotificationCenter")
+    NSUserNotification = ObjCClass("NSUserNotification")
+
+    NSUserNotificationActivationTypeContentsClicked = 1
+
+    def _notify(title, msg):  # noqa
+        notificationCenter = NSUserNotificationCenter.defaultUserNotificationCenter()
+        notification = NSUserNotification.alloc().init().autorelease()
+        notification.setTitle_(get_NSString(title))
+        notification.setInformativeText_(get_NSString(msg))
+        notification.setActivationType_(NSUserNotificationActivationTypeContentsClicked)
+        notificationCenter.deliverNotification_(notification)
 
 
 def notify(title, msg, level=BASIC):
