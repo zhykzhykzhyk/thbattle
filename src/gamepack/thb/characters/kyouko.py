@@ -43,7 +43,6 @@ class EchoHandler(EventHandler):
             g = Game.getgame()
             pact = g.action_stack[-1]
             card = getattr(pact, 'associated_card', None)
-            print card
             if not card or not card.is_card(PhysicalCard):
                 return act
 
