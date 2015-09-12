@@ -16,7 +16,7 @@ __metaclass__ = gen_metafunc(characters.kyouko)
 class Kyouko:
     # Character
     char_name = u'幽谷响子'
-    port_image = 'thb-portrait-akari'
+    port_image = 'thb-portrait-kyouko'
     description = (
         u'|DB幽谷响子 体力：4|r\n\n'
         u'|G回响|r：当一张牌对你造成伤害后，你可以获得这张牌；如果这张牌是弹幕，你可改令另一名获得这张牌。\n\n'
