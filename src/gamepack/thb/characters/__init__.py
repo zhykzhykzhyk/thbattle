@@ -50,7 +50,6 @@ import shinmyoumaru
 import nitori
 import shizuha
 import kyouko
-import kyoukob
 
 # weektour
 import youmu20150620
