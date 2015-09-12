@@ -75,12 +75,7 @@ class ResonanceDrawAction(DrawCards):
 
 
 class ResonanceLaunchCard(LaunchCard):
-    def apply_action(self):
-        g = Game.getgame()
-        if self.card.suit == self.suit:
-            g.process_action(ResonanceDrawAction(self.source, 1))
-
-        return super(ResonanceLaunchCard, self).apply_action()
+    pass
 
 
 class ResonanceAction(GenericAction):
@@ -153,4 +148,4 @@ class ResonanceHandler(EventHandler):
 class Kyouko(Character):
     skills = [Echo, Resonance]
     eventhandlers_required = [EchoHandler, ResonanceHandler]
-    maxlife = 3
+    maxlife = 4
