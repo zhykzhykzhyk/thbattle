@@ -46,6 +46,9 @@ class EchoHandler(EventHandler):
             if not card or not card.is_card(PhysicalCard):
                 return act
 
+            if not card.detached or card.unwarpped:
+                return act
+
             if not user_input([tgt], ChooseOptionInputlet(self, (False, True))):
                 return act
 
@@ -124,7 +127,7 @@ class ResonanceHandler(EventHandler):
                 return act
 
             g = Game.getgame()
-            pl = [p for p in g.players if not p.dead and p is not src]
+            pl = [p for p in g.players if not p.dead and p not in (src, tgt)]
             pl = user_choose_players(self, src, pl)
 
             if not pl:
