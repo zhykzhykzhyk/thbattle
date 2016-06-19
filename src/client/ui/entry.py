@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
 
 # -- stdlib --
 import logging
@@ -69,7 +70,7 @@ def start_ui():
     gllib.errcheck = my_errcheck
     # ------------------------------------
 
-    from screens import UpdateScreen, ServerSelectScreen
+    from client.ui.screens import UpdateScreen, ServerSelectScreen
     from client.core import Executive
     from options import options
 
